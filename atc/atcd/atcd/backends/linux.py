@@ -354,11 +354,18 @@ class AtcdLinuxShaper(AtcdThriftHandlerTask):
         if options is None or len(options) == 0:
             options = ['']
         for opt in options:
+            """
             cmd = "{0} -t mangle -D FORWARD {1} {2} -i {3} {option} " \
                 "-j MARK --set-mark {4}".format(
                     self.iptables, "-s"
                     if eth['name'] == self.lan['name'] else "-d",
                     ip, eth['name'], mark, option=opt)
+            """
+            cmd = "{0} -t mangle -D FORWARD {1} {2} -i {3} {option} " \
+                "-j MARK --set-mark {4}".format(
+                    self.iptables, "-s"
+                    if eth['name'] == self.wan['name'] else "-d",
+                    ip,  self.lan['name'] if eth['name'] == self.wan['name'] else self.wan['name'] , mark, option=opt)
             self.run_cmd(cmd)
 
     def _set_iptables(self, mark, eth, ip, options=None):
@@ -379,11 +386,18 @@ class AtcdLinuxShaper(AtcdThriftHandlerTask):
         if options is None or len(options) == 0:
             options = ['']
         for opt in options:
+            """
             cmd = "{0} -t mangle -A FORWARD {1} {2} -i {3} {option} " \
                 "-j MARK --set-mark {4}".format(
                     self.iptables, "-s"
                     if eth['name'] == self.lan['name'] else "-d",
                     ip, eth['name'], mark, option=opt)
+            """
+            cmd = "{0} -t mangle -A FORWARD {1} {2} -i {3} {option} " \
+                "-j MARK --set-mark {4}".format(
+                    self.iptables, "-s"
+                    if eth['name'] == self.wan['name'] else "-d",
+                    ip,  self.lan['name'] if eth['name'] == self.wan['name'] else self.wan['name'], mark, option=opt)
             self.run_cmd(cmd)
 
     def _shape_interface(self, mark, eth, ip, shaping):
